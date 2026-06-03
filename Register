@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EDUGRAM — Create Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Variables ── */
+    :root {
+      --navy:        #1a3a5c;
+      --navy-dark:   #0f2339;
+      --navy-mid:    #234a73;
+      --gold:        #c9a84c;
+      --gray-50:     #f8f9fa;
+      --gray-100:    #f1f3f5;
+      --gray-200:    #e5e7eb;
+      --gray-300:    #d1d5db;
+      --gray-400:    #9ca3af;
+      --gray-500:    #6b7280;
+      --gray-600:    #4b5563;
+      --gray-700:    #374151;
+      --gray-800:    #1f2937;
+      --red:         #dc2626;
+      --red-light:   #fef2f2;
+      --red-mid:     #fee2e2;
+      --green:       #16a34a;
+      --green-light: #f0fdf4;
+      --green-mid:   #bbf7d0;
+      --radius-sm:   6px;
+      --shadow-lg:   0 10px 30px rgba(0,0,0,.18);
+      --font-serif:  'Playfair Display', Georgia, serif;
+      --font-sans:   'DM Sans', system-ui, sans-serif;
+      --transition:  200ms ease;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body {
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      padding: 2rem 0;
+    }
+    button { cursor: pointer; font-family: var(--font-sans); border: none; background: none; }
+    input, select {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.9rem;
+      width: 100%;
+      background: white;
+      color: var(--gray-800);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(26,58,92,.12);
+    }
+    input.error-field { border-color: var(--red); }
+    input.error-field:focus { box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: .4rem;
+    }
+
+    /* ── Background ── */
+    .auth-bg {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f2339 0%, #1a3a5c 50%, #234a73 100%);
+      z-index: 0;
+    }
+    .auth-bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .auth-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: .25;
+    }
+    .auth-orb-1 { width: 420px; height: 420px; background: var(--gold); top: -120px; right: -100px; }
+    .auth-orb-2 { width: 300px; height: 300px; background: #4a90d9; bottom: -80px; left: -80px; }
+
+    /* ── Container ── */
+    .auth-container {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 480px;
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1.5rem;
+      animation: fadeSlideUp .45s ease both;
+    }
+
+    /* ── Brand ── */
+    .auth-brand { display: flex; align-items: center; gap: .75rem; color: white; }
+    .brand-text { display: flex; flex-direction: column; }
+    .brand-name {
+      font-family: var(--font-serif); font-size: 1.6rem;
+      font-weight: 700; letter-spacing: .05em;
+      color: white; line-height: 1;
+    }
+    .brand-tagline {
+      font-size: 0.72rem; color: rgba(255,255,255,.6);
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+
+    /* ── Progress steps ── */
+    .reg-steps {
+      display: flex; align-items: center; gap: 0;
+      width: 100%; padding: 0 .5rem;
+    }
+    .step {
+      display: flex; flex-direction: column;
+      align-items: center; gap: .3rem; flex: 1;
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; font-weight: 700;
+      border: 2px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.4);
+      background: transparent;
+      transition: all .3s ease;
+    }
+    .step.active .step-dot {
+      background: var(--gold); border-color: var(--gold);
+      color: var(--navy-dark);
+    }
+    .step.done .step-dot {
+      background: var(--green); border-color: var(--green); color: white;
+    }
+    .step-label {
+      font-size: .67rem; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: rgba(255,255,255,.35);
+      transition: color .3s ease;
+    }
+    .step.active .step-label { color: rgba(255,255,255,.85); }
+    .step.done .step-label   { color: rgba(255,255,255,.6); }
+    .step-connector {
+      flex: 1.5; height: 2px;
+      background: rgba(255,255,255,.15);
+      margin-bottom: 1.15rem;
+      position: relative; overflow: hidden;
+    }
+    .step-connector-fill {
+      position: absolute; inset: 0;
+      background: var(--green);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .4s ease;
+    }
+    .step-connector.done .step-connector-fill { transform: scaleX(1); }
+
+    /* ── Card ── */
+    .auth-card {
+      width: 100%; background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.08);
+      overflow: hidden; position: relative;
+    }
+
+    /* ── Form pages ── */
+    .reg-page {
+      display: none; padding: 1.85rem;
+      flex-direction: column; gap: 1.1rem;
+      animation: fadeIn .25s ease;
+    }
+    .reg-page.active { display: flex; }
+
+    .form-header { margin-bottom: .1rem; }
+    .form-header h2 {
+      font-family: var(--font-serif);
+      font-size: 1.4rem; color: var(--navy); line-height: 1.2;
+    }
+    .form-header p { font-size: .84rem; color: var(--gray-500); margin-top: .25rem; }
+
+    /* ── Field group ── */
+    .field-group { display: flex; flex-direction: column; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field-hint {
+      font-size: .72rem; color: var(--gray-400);
+      margin-top: .3rem; display: none;
+    }
+    .field-hint.visible { display: block; }
+
+    /* ── Password field ── */
+    .password-wrap { position: relative; display: flex; align-items: center; }
+    .password-wrap input { padding-right: 2.8rem; }
+    .toggle-pass {
+      position: absolute; right: .75rem;
+      color: var(--gray-400); display: flex; align-items: center;
+      transition: color var(--transition); padding: .2rem;
+    }
+    .toggle-pass:hover { color: var(--navy); }
+    .toggle-pass svg { width: 17px; height: 17px; }
+
+    /* ── Password strength bar ── */
+    .strength-bar-wrap {
+      margin-top: .45rem;
+      display: none; flex-direction: column; gap: .3rem;
+    }
+    .strength-bar-wrap.visible { display: flex; }
+    .strength-track {
+      height: 4px; border-radius: 4px;
+      background: var(--gray-100);
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%; border-radius: 4px;
+      transition: width .3s ease, background .3s ease;
+      width: 0%;
+    }
+    .strength-label {
+      font-size: .7rem; font-weight: 600;
+      color: var(--gray-400); text-align: right;
+    }
+
+    /* ── Role dropdown ── */
+    .role-dropdown-wrap { position: relative; display: flex; align-items: center; }
+    .role-dropdown {
+      width: 100%; appearance: none; -webkit-appearance: none;
+      padding: .65rem 2.5rem .65rem .9rem;
+      border: 1.5px solid var(--gray-200); border-radius: 8px;
+      font-size: .9rem; font-weight: 500; color: var(--gray-700);
+      background: white; cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      outline: none;
+    }
+    .role-dropdown:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,58,92,.12); }
+    .role-dropdown:hover { border-color: var(--navy-mid); background: var(--gray-50); }
+    .role-dropdown-arrow {
+      position: absolute; right: .75rem; pointer-events: none;
+      display: flex; align-items: center; color: var(--gray-400);
+      transition: color var(--transition);
+    }
+    .role-dropdown-arrow svg { width: 16px; height: 16px; }
+    .role-dropdown-wrap:focus-within .role-dropdown-arrow { color: var(--navy); }
+
+    /* ── Role cards ── */
+    .role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .role-card {
+      border: 1.5px solid var(--gray-200); border-radius: 10px;
+      padding: .9rem .85rem; cursor: pointer;
+      transition: all var(--transition);
+      display: flex; flex-direction: column; gap: .35rem;
+      background: white;
+    }
+    .role-card:hover { border-color: var(--navy-mid); background: var(--gray-50); }
+    .role-card.selected { border-color: var(--navy); background: #f0f5ff; box-shadow: 0 0 0 3px rgba(26,58,92,.1); }
+    .role-card-icon { font-size: 1.4rem; }
+    .role-card-title { font-weight: 700; font-size: .88rem; color: var(--navy); }
+    .role-card-desc  { font-size: .74rem; color: var(--gray-500); line-height: 1.4; }
+    .role-card-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid var(--gray-300);
+      margin-left: auto; margin-top: .1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .role-card.selected .role-card-check {
+      background: var(--navy); border-color: var(--navy);
+    }
+    .role-card.selected .role-card-check::after {
+      content: '';
+      width: 7px; height: 5px;
+      border-left: 2px solid white; border-bottom: 2px solid white;
+      transform: rotate(-45deg) translateY(-1px);
+      display: block;
+    }
+
+    /* ── Review summary ── */
+    .review-list {
+      background: var(--gray-50); border-radius: 10px;
+      border: 1.5px solid var(--gray-100);
+      overflow: hidden;
+    }
+    .review-row {
+      display: flex; align-items: center;
+      padding: .6rem .9rem; gap: .75rem;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .review-row:last-child { border-bottom: none; }
+    .review-key {
+      font-size: .74rem; font-weight: 600;
+      color: var(--gray-400); text-transform: uppercase;
+      letter-spacing: .04em; width: 90px; flex-shrink: 0;
+    }
+    .review-val {
+      font-size: .88rem; color: var(--gray-800); font-weight: 500;
+    }
+    .review-val.role-badge {
+      background: var(--navy); color: white;
+      padding: .15rem .55rem; border-radius: 20px;
+      font-size: .75rem;
+    }
+
+    /* ── Terms checkbox ── */
+    .terms-row {
+      display: flex; align-items: flex-start; gap: .6rem;
+    }
+    .terms-row input[type="checkbox"] {
+      width: 16px; height: 16px;
+      flex-shrink: 0; margin-top: .15rem;
+      padding: 0; accent-color: var(--navy);
+    }
+    .terms-row label {
+      font-size: .8rem; color: var(--gray-600);
+      text-transform: none; letter-spacing: 0;
+      font-weight: 400; cursor: pointer;
+    }
+    .terms-row a { color: var(--navy); font-weight: 600; text-decoration: underline; }
+
+    /* ── Divider ── */
+    .form-divider { border: none; border-top: 1.5px solid var(--gray-100); }
+
+    /* ── Button row ── */
+    .btn-row { display: flex; gap: .75rem; }
+    .btn-primary {
+      background: var(--navy); color: white;
+      padding: .76rem 1.5rem; border-radius: 8px;
+      font-size: .92rem; font-weight: 600;
+      transition: all var(--transition);
+      letter-spacing: .01em; flex: 1;
+      position: relative;
+    }
+    .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,58,92,.35); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary.loading { pointer-events: none; opacity: .8; }
+    .btn-primary .btn-spinner {
+      display: none; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4); border-top-color: white;
+      border-radius: 50%; animation: spin .6s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-primary.loading .btn-text { display: none; }
+    .btn-primary.loading .btn-spinner { display: block; }
+    .btn-secondary {
+      background: var(--gray-100); color: var(--gray-700);
+      padding: .76rem 1.2rem; border-radius: 8px;
+      font-size: .9rem; font-weight: 600;
+      transition: all var(--transition);
+    }
+    .btn-secondary:hover { background: var(--gray-200); }
+
+    /* ── Alerts ── */
+    .form-error {
+      background: var(--red-light); color: var(--red);
+      padding: .6rem .85rem; border-radius: 6px;
+      font-size: .82rem; border: 1px solid var(--red-mid);
+      display: none; align-items: center; gap: .5rem;
+    }
+    .form-error.visible { display: flex; }
+    .form-error svg { flex-shrink: 0; width: 15px; height: 15px; }
+    .form-success {
+      background: var(--green-light); color: var(--green);
+      padding: .6rem .85rem; border-radius: 6px;
+      font-size: .82rem; border: 1px solid var(--green-mid);
+      display: none; align-items: center; gap: .5rem;
+    }
+    .form-success.visible { display: flex; }
+    .form-success svg { flex-shrink: 0; width: 15px; height: 15px; }
+
+    /* ── Success overlay ── */
+    .success-overlay {
+      position: absolute; inset: 0;
+      background: white;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: .85rem;
+      border-radius: 16px; z-index: 10;
+      animation: fadeIn .3s ease;
+      padding: 2rem;
+      text-align: center;
+    }
+    .success-overlay.visible { display: flex; }
+    .success-ring {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: var(--green-light);
+      display: flex; align-items: center; justify-content: center;
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .success-ring svg { width: 30px; height: 30px; color: var(--green); }
+    .success-overlay h3 {
+      font-family: var(--font-serif); color: var(--navy); font-size: 1.3rem;
+    }
+    .success-overlay p { font-size: .85rem; color: var(--gray-500); line-height: 1.5; }
+    .success-redirect {
+      font-size: .78rem; color: var(--gray-400);
+      display: flex; align-items: center; gap: .4rem;
+      margin-top: .25rem;
+    }
+    .redirect-dots span {
+      display: inline-block; width: 5px; height: 5px;
+      background: var(--gold); border-radius: 50;
+      animation: blink 1.2s ease infinite;
+    }
+    .redirect-dots span:nth-child(2) { animation-delay: .2s; }
+    .redirect-dots span:nth-child(3) { animation-delay: .4s; }
+
+    /* ── Footer ── */
+    .auth-footer {
+      font-size: .75rem; color: rgba(255,255,255,.45); text-align: center;
+    }
+    .auth-footer a { color: rgba(255,255,255,.6); text-decoration: underline; }
+
+    /* ── Animations ── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes spin   { to { transform: rotate(360deg); } }
+    @keyframes popIn  { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+    @keyframes blink  { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .auth-container { padding: 1.5rem 1rem; }
+      .reg-page       { padding: 1.5rem; }
+      .field-row      { grid-template-columns: 1fr; }
+      .role-cards     { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="auth-bg">
+    <div class="auth-bg-grid"></div>
+    <div class="auth-orb auth-orb-1"></div>
+    <div class="auth-orb auth-orb-2"></div>
+  </div>
+
+  <!-- Main container -->
+  <div class="auth-container">
+
+    <!-- Brand -->
+    <div class="auth-brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="10" fill="#1a3a5c"/>
+        <path d="M8 26L18 10L28 26H8Z" fill="#c9a84c" opacity="0.9"/>
+        <path d="M13 26L18 17L23 26H13Z" fill="white" opacity="0.9"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">EDUGRAM</span>
+        <span class="brand-tagline">Academic Writing System</span>
+      </div>
+    </div>
+
+    <!-- Step indicators -->
+    <div class="reg-steps" id="reg-steps">
+      <div class="step active" id="step-1">
+        <div class="step-dot">1</div>
+        <span class="step-label">Account</span>
+      </div>
+      <div class="step-connector" id="conn-1"><div class="step-connector-fill"></div></div>
+      <div class="step" id="step-2">
+        <div class="step-dot">2</div>
+        <span class="step-label">Role</span>
+      </div>
+      <div class="step-connector" id="conn-2"><div class="step-connector-fill"></div></div>
+      <div class="step" id="step-3">
+        <div class="step-dot">3</div>
+        <span class="step-label">Review</span>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+
+      <!-- Success overlay -->
+      <div class="success-overlay" id="success-overlay">
+        <div class="success-ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Account Created!</h3>
+        <p id="success-name-msg">Welcome to EDUGRAM.</p>
+        <p style="font-size:.82rem;color:var(--gray-400);">You can now sign in with your credentials.</p>
+        <div class="success-redirect">
+          Redirecting to login
+          <div class="redirect-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PAGE 1 · Account Details ── -->
+      <div class="reg-page active" id="page-1">
+        <div class="form-header">
+          <h2>Create account</h2>
+          <p>Enter your personal and login details below</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="reg-first">First Name</label>
+            <input type="text" id="reg-first" placeholder="First" autocomplete="given-name" />
+          </div>
+          <div class="field-group">
+            <label for="reg-last">Last Name</label>
+            <input type="text" id="reg-last" placeholder="Last" autocomplete="family-name" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="reg-email">Institutional Email</label>
+          <input type="email" id="reg-email" placeholder="you@institution.edu" autocomplete="email" />
+        </div>
+
+        <div class="field-group">
+          <label for="reg-id">Student / Employee ID</label>
+          <input type="text" id="reg-id" placeholder="e.g. 2024-00123" />
+          <span class="field-hint" id="id-hint">Use the format provided by your institution (e.g. 2024-00123)</span>
+        </div>
+
+        <div class="field-group">
+          <label for="reg-password">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="reg-password" placeholder="Min. 8 characters" autocomplete="new-password" />
+            <button class="toggle-pass" id="toggle-pass" type="button" aria-label="Toggle password visibility">
+              <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eye-off-icon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Strength bar -->
+          <div class="strength-bar-wrap" id="strength-wrap">
+            <div class="strength-track"><div class="strength-fill" id="strength-fill"></div></div>
+            <span class="strength-label" id="strength-label"></span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="reg-confirm">Confirm Password</label>
+          <div class="password-wrap">
+            <input type="password" id="reg-confirm" placeholder="Re-enter password" autocomplete="new-password" />
+            <button class="toggle-pass" id="toggle-confirm" type="button" aria-label="Toggle confirm visibility">
+              <svg id="eye-icon-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eye-off-icon-c" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-error" id="page1-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="page1-error-text"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <button class="btn-primary" id="btn-next-1" type="button">
+          <span class="btn-text">Continue →</span>
+          <div class="btn-spinner"></div>
+        </button>
+      </div>
+
+      <!-- ── PAGE 2 · Role Selection ── -->
+      <div class="reg-page" id="page-2">
+        <div class="form-header">
+          <h2>Choose your role</h2>
+          <p>Select how you will be using EDUGRAM</p>
+        </div>
+
+        <div class="field-group">
+          <label>I am registering as a…</label>
+          <div class="role-cards">
+            <div class="role-card" id="card-student" data-role="student">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <span class="role-card-icon">🎓</span>
+                <span class="role-card-check"></span>
+              </div>
+              <div class="role-card-title">Student</div>
+              <div class="role-card-desc">Submit assignments, receive feedback, and track your progress.</div>
+            </div>
+            <div class="role-card" id="card-teacher" data-role="teacher">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <span class="role-card-icon">📋</span>
+                <span class="role-card-check"></span>
+              </div>
+              <div class="role-card-title">Teacher</div>
+              <div class="role-card-desc">Create assignments, review submissions, and grade students.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Also keep a hidden select for JS compatibility -->
+        <select id="reg-role-select" class="role-dropdown" style="display:none;">
+          <option value="" disabled selected>Choose your role…</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+
+        <div class="form-error" id="page2-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="page2-error-text"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <div class="btn-row">
+          <button class="btn-secondary" id="btn-back-2" type="button">← Back</button>
+          <button class="btn-primary" id="btn-next-2" type="button">
+            <span class="btn-text">Review →</span>
+            <div class="btn-spinner"></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── PAGE 3 · Review & Submit ── -->
+      <div class="reg-page" id="page-3">
+        <div class="form-header">
+          <h2>Review &amp; confirm</h2>
+          <p>Please verify your details before creating your account</p>
+        </div>
+
+        <div class="review-list">
+          <div class="review-row">
+            <span class="review-key">Full Name</span>
+            <span class="review-val" id="rv-name">—</span>
+          </div>
+          <div class="review-row">
+            <span class="review-key">Email</span>
+            <span class="review-val" id="rv-email">—</span>
+          </div>
+          <div class="review-row">
+            <span class="review-key">ID</span>
+            <span class="review-val" id="rv-id">—</span>
+          </div>
+          <div class="review-row">
+            <span class="review-key">Role</span>
+            <span class="review-val" id="rv-role">—</span>
+          </div>
+          <div class="review-row">
+            <span class="review-key">Password</span>
+            <span class="review-val" style="color:var(--gray-400);letter-spacing:.1em;">••••••••</span>
+          </div>
+        </div>
+
+        <div class="terms-row">
+          <input type="checkbox" id="terms-check" />
+          <label for="terms-check">
+            I agree to the <a href="#" onclick="return false;">Terms of Use</a> and
+            <a href="#" onclick="return false;">Privacy Policy</a> of EDUGRAM.
+          </label>
+        </div>
+
+        <div class="form-error" id="page3-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="page3-error-text"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <div class="btn-row">
+          <button class="btn-secondary" id="btn-back-3" type="button">← Back</button>
+          <button class="btn-primary" id="btn-submit" type="button">
+            <span class="btn-text">Create Account</span>
+            <div class="btn-spinner"></div>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /.auth-card -->
+
+    <p class="auth-footer">
+      Already have an account? <a href="login.html">Sign in here</a>
+    </p>
+
+  </div><!-- /.auth-container -->
+
+  <script>
+    'use strict';
+
+    /* ── Simulated existing users (for duplicate-email check) ── */
+    const USERS = [
+      { email: 'student@edugram.edu', password: 'student123', role: 'student', firstName: 'Maria',     lastName: 'Santos',    studentId:  '2024-00101' },
+      { email: 'teacher@edugram.edu', password: 'teacher123', role: 'teacher', firstName: 'Prof. Juan', lastName: 'Dela Cruz', employeeId: 'FAC-2024-001' },
+      { email: 'john@edugram.edu',    password: 'john1234',   role: 'student', firstName: 'John',       lastName: 'Reyes',     studentId:  '2024-00102' },
+    ];
+
+    /* ── State ── */
+    let currentPage = 1;
+
+    /* ── Helpers ── */
+    function showError(boxId, textId, msg) {
+      document.getElementById(textId).textContent = msg;
+      document.getElementById(boxId).classList.add('visible');
+    }
+    function hideError(boxId) {
+      document.getElementById(boxId).classList.remove('visible');
+    }
+    function markError(el) { el.classList.add('error-field'); }
+    function clearErrors() {
+      document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+      ['page1-error','page2-error','page3-error'].forEach(id => hideError(id));
+    }
+
+    /* ── Step indicator ── */
+    function setStep(n) {
+      currentPage = n;
+      for (let i = 1; i <= 3; i++) {
+        const step = document.getElementById('step-' + i);
+        step.classList.remove('active', 'done');
+        if (i < n)  step.classList.add('done');
+        if (i === n) step.classList.add('active');
+      }
+      for (let i = 1; i <= 2; i++) {
+        const conn = document.getElementById('conn-' + i);
+        conn.classList.toggle('done', i < n);
+      }
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById('page-' + i).classList.toggle('active', i === n);
+      }
+    }
+
+    /* ── Password show/hide ── */
+    function setupToggle(btnId, inputId, eyeId, eyeOffId) {
+      document.getElementById(btnId).addEventListener('click', () => {
+        const inp = document.getElementById(inputId);
+        const isPass = inp.type === 'password';
+        inp.type = isPass ? 'text' : 'password';
+        document.getElementById(eyeId).style.display    = isPass ? 'none'  : 'block';
+        document.getElementById(eyeOffId).style.display = isPass ? 'block' : 'none';
+      });
+    }
+    setupToggle('toggle-pass',    'reg-password', 'eye-icon',   'eye-off-icon');
+    setupToggle('toggle-confirm', 'reg-confirm',  'eye-icon-c', 'eye-off-icon-c');
+
+    /* ── Password strength ── */
+    const passEl   = document.getElementById('reg-password');
+    const fillEl   = document.getElementById('strength-fill');
+    const labelEl  = document.getElementById('strength-label');
+    const wrapEl   = document.getElementById('strength-wrap');
+
+    passEl.addEventListener('input', () => {
+      const val = passEl.value;
+      if (!val) { wrapEl.classList.remove('visible'); return; }
+      wrapEl.classList.add('visible');
+      let score = 0;
+      if (val.length >= 8)            score++;
+      if (val.length >= 12)           score++;
+      if (/[A-Z]/.test(val))          score++;
+      if (/[0-9]/.test(val))          score++;
+      if (/[^A-Za-z0-9]/.test(val))   score++;
+      const levels = [
+        { pct: '20%', color: '#ef4444', text: 'Very Weak' },
+        { pct: '40%', color: '#f97316', text: 'Weak'      },
+        { pct: '60%', color: '#eab308', text: 'Fair'      },
+        { pct: '80%', color: '#22c55e', text: 'Strong'    },
+        { pct:'100%', color: '#16a34a', text: 'Very Strong'},
+      ];
+      const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+      fillEl.style.width      = lvl.pct;
+      fillEl.style.background = lvl.color;
+      labelEl.textContent     = lvl.text;
+      labelEl.style.color     = lvl.color;
+    });
+
+    /* ── Role card selection ── */
+    document.querySelectorAll('.role-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        document.getElementById('reg-role-select').value = card.dataset.role;
+        hideError('page2-error');
+      });
+    });
+
+    /* ── ID hint ── */
+    document.getElementById('reg-id').addEventListener('focus', () => {
+      document.getElementById('id-hint').classList.add('visible');
+    });
+    document.getElementById('reg-id').addEventListener('blur', () => {
+      document.getElementById('id-hint').classList.remove('visible');
+    });
+
+    /* ── Page 1 validation → go to page 2 ── */
+    document.getElementById('btn-next-1').addEventListener('click', () => {
+      clearErrors();
+      const first   = document.getElementById('reg-first').value.trim();
+      const last    = document.getElementById('reg-last').value.trim();
+      const email   = document.getElementById('reg-email').value.trim();
+      const id      = document.getElementById('reg-id').value.trim();
+      const pass    = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+
+      if (!first) { markError(document.getElementById('reg-first')); showError('page1-error','page1-error-text','First name is required.'); return; }
+      if (!last)  { markError(document.getElementById('reg-last'));  showError('page1-error','page1-error-text','Last name is required.'); return; }
+      if (!email) { markError(document.getElementById('reg-email')); showError('page1-error','page1-error-text','Email address is required.'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { markError(document.getElementById('reg-email')); showError('page1-error','page1-error-text','Please enter a valid email address.'); return; }
+      if (USERS.find(u => u.email === email)) { markError(document.getElementById('reg-email')); showError('page1-error','page1-error-text','This email is already registered.'); return; }
+      if (!id)    { markError(document.getElementById('reg-id'));    showError('page1-error','page1-error-text','Student/Employee ID is required.'); return; }
+      if (!pass)  { markError(document.getElementById('reg-password')); showError('page1-error','page1-error-text','Password is required.'); return; }
+      if (pass.length < 8) { markError(document.getElementById('reg-password')); showError('page1-error','page1-error-text','Password must be at least 8 characters.'); return; }
+      if (pass !== confirm) { markError(document.getElementById('reg-confirm')); showError('page1-error','page1-error-text','Passwords do not match.'); return; }
+
+      setStep(2);
+    });
+
+    /* ── Page 2 → go to page 3 ── */
+    document.getElementById('btn-next-2').addEventListener('click', () => {
+      clearErrors();
+      const role = document.getElementById('reg-role-select').value;
+      if (!role) { showError('page2-error','page2-error-text','Please select your role to continue.'); return; }
+
+      // Populate review
+      const first = document.getElementById('reg-first').value.trim();
+      const last  = document.getElementById('reg-last').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const id    = document.getElementById('reg-id').value.trim();
+      document.getElementById('rv-name').textContent  = first + ' ' + last;
+      document.getElementById('rv-email').textContent = email;
+      document.getElementById('rv-id').textContent    = id;
+      const roleEl = document.getElementById('rv-role');
+      roleEl.textContent = role === 'student' ? '🎓 Student' : '📋 Teacher';
+      roleEl.className   = 'review-val role-badge';
+
+      setStep(3);
+    });
+
+    /* ── Back buttons ── */
+    document.getElementById('btn-back-2').addEventListener('click', () => { clearErrors(); setStep(1); });
+    document.getElementById('btn-back-3').addEventListener('click', () => { clearErrors(); setStep(2); });
+
+    /* ── Final submit ── */
+    document.getElementById('btn-submit').addEventListener('click', () => {
+      clearErrors();
+      if (!document.getElementById('terms-check').checked) {
+        showError('page3-error','page3-error-text','You must agree to the Terms of Use and Privacy Policy.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit');
+      btn.classList.add('loading');
+
+      setTimeout(() => {
+        const first = document.getElementById('reg-first').value.trim();
+        const last  = document.getElementById('reg-last').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const pass  = document.getElementById('reg-password').value;
+        const id    = document.getElementById('reg-id').value.trim();
+        const role  = document.getElementById('reg-role-select').value;
+
+        const newUser = { email, password: pass, role, firstName: first, lastName: last };
+        if (role === 'student') newUser.studentId = id; else newUser.employeeId = id;
+        USERS.push(newUser);
+
+        btn.classList.remove('loading');
+
+        document.getElementById('success-name-msg').textContent =
+          `Welcome, ${first}! Your ${role} account has been created.`;
+        document.getElementById('success-overlay').classList.add('visible');
+
+        // Redirect after 2.5s (update href as needed)
+        setTimeout(() => { window.location.href = 'login.html'; }, 2500);
+      }, 1000);
+    });
+
+    /* ── Clear field errors on input ── */
+    document.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', () => el.classList.remove('error-field'));
+    });
+  </script>
+
+</body>
+</html>
